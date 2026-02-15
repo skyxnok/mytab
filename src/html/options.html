@@ -27,12 +27,23 @@
             margin-bottom: 5px;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        select {
+            background-color: white;
+            cursor: pointer;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #2ea44f;
         }
 
         button {
@@ -71,7 +82,32 @@
     </div>
     <button id="save">保存配置</button>
     <p id="status" style="color: green; text-align: center;"></p>
-    <script src="options.js"></script>
+    <hr>
+    <h2>外观设置</h2>
+
+    <div class="field">
+        <label>背景模式</label>
+        <select id="bg-mode">
+            <option value="fixed">固定图片</option>
+            <option value="random">随机风景 (Unsplash)</option>
+        </select>
+    </div>
+
+    <div id="fixed-bg-options">
+        <div class="field">
+            <label>上传本地背景</label>
+            <input type="file" id="bg-upload" accept="image/*">
+        </div>
+        <div class="field">
+            <label>或输入图片 URL</label>
+            <input type="text" id="bg-url" placeholder="https://...">
+        </div>
+    </div>
+
+    <button id="save-appearance">保存外观设置</button>
+    <p id="appearance-status" style="color: green; text-align: center;"></p>
+    <script src="../js/config.js"></script>
+    <script src="../js/options.js"></script>
 </body>
 
 </html>
