@@ -1,44 +1,183 @@
-// 获取书签并显示
-function renderBookmarks() {
-    chrome.bookmarks.getTree((tree) => {
-        const list = document.getElementById('bookmark-list');
-        // 递归遍历书签树的简单示例
-        processNodes(tree[0].children);
-        console.log(list);
-    });
+
+/**
+ * 配置管理类 - 提供完整的增删改查功能
+ */
+class ConfigManager {
+    constructor() {
+        this.storageKey = 'app_config';
+    }
+
+    /**
+     * 创建/更新配置（增/改）
+     * @param {string} key - 配置键名
+     * @param {*} value - 配置值
+     * @returns {Promise<boolean>}
+     */
+    async set(key, value) {
+        return new Promise((resolve, reject) => {
+            const data = { [key]: value };
+            chrome.storage.sync.set(data, () => {
+                if (chrome.runtime.lastError) {
+                    console.error('保存配置失败:', chrome.runtime.lastError);
+                    reject(chrome.runtime.lastError);
+                } else {
+                    console.log(`配置已保存: ${key}`);
+                    resolve(true);
+                }
+            });
+        });
+    }
+
+    /**
+     * 批量设置配置
+     * @param {Object} configObj - 配置对象
+     * @returns {Promise<boolean>}
+     */
+    async setMultiple(configObj) {
+        return new Promise((resolve, reject) => {
+            chrome.storage.sync.set(configObj, () => {
+                if (chrome.runtime.lastError) {
+                    console.error('批量保存配置失败:', chrome.runtime.lastError);
+                    reject(chrome.runtime.lastError);
+                } else {
+                    console.log('批量配置已保存:', Object.keys(configObj));
+                    resolve(true);
+                }
+            });
+        });
+    }
+
+    /**
+     * 读取配置（查）
+     * @param {string|Array<string>} keys - 单个键名或键名数组
+     * @returns {Promise<Object>}
+     */
+    async get(keys) {
+        return new Promise((resolve, reject) => {
+            chrome.storage.sync.get(keys, (items) => {
+                if (chrome.runtime.lastError) {
+                    console.error('读取配置失败:', chrome.runtime.lastError);
+                    reject(chrome.runtime.lastError);
+                } else {
+                    resolve(items);
+                }
+            });
+        });
+    }
+
+    /**
+     * 获取单个配置值
+     * @param {string} key - 配置键名
+     * @param {*} defaultValue - 默认值
+     * @returns {Promise<*>}
+     */
+    async getOne(key, defaultValue = null) {
+        const result = await this.get([key]);
+        return result[key] !== undefined ? result[key] : defaultValue;
+    }
+
+    /**
+     * 删除配置（删）
+     * @param {string|Array<string>} keys - 单个键名或键名数组
+     * @returns {Promise<boolean>}
+     */
+    async remove(keys) {
+        return new Promise((resolve, reject) => {
+            chrome.storage.sync.remove(keys, () => {
+                if (chrome.runtime.lastError) {
+                    console.error('删除配置失败:', chrome.runtime.lastError);
+                    reject(chrome.runtime.lastError);
+                } else {
+                    const keyList = Array.isArray(keys) ? keys.join(', ') : keys;
+                    console.log(`配置已删除: ${keyList}`);
+                    resolve(true);
+                }
+            });
+        });
+    }
+
+    /**
+     * 清空所有配置
+     * @returns {Promise<boolean>}
+     */
+    async clear() {
+        return new Promise((resolve, reject) => {
+            chrome.storage.sync.clear(() => {
+                if (chrome.runtime.lastError) {
+                    console.error('清空配置失败:', chrome.runtime.lastError);
+                    reject(chrome.runtime.lastError);
+                } else {
+                    console.log('所有配置已清空');
+                    resolve(true);
+                }
+            });
+        });
+    }
+
+    /**
+     * 获取所有配置
+     * @returns {Promise<Object>}
+     */
+    async getAll() {
+        return new Promise((resolve, reject) => {
+            chrome.storage.sync.get(null, (items) => {
+                if (chrome.runtime.lastError) {
+                    console.error('获取所有配置失败:', chrome.runtime.lastError);
+                    reject(chrome.runtime.lastError);
+                } else {
+                    resolve(items);
+                }
+            });
+        });
+    }
+
+    /**
+     * 检查配置是否存在
+     * @param {string} key - 配置键名
+     * @returns {Promise<boolean>}
+     */
+    async has(key) {
+        const result = await this.get([key]);
+        return result.hasOwnProperty(key);
+    }
+
+    /**
+     * 监听配置变化
+     * @param {Function} callback - 回调函数 (changes, areaName) => {}
+     */
+    onChanged(callback) {
+        chrome.storage.onChanged.addListener((changes, areaName) => {
+            if (areaName === 'sync') {
+                callback(changes, areaName);
+            }
+        });
+    }
 }
 
-function processNodes(nodes) {
-    const container = document.getElementById('bookmark-list');
-    nodes.forEach(node => {
-        if (node.url) { // 如果是链接
-            const div = document.createElement('div');
-            div.className = 'bookmark-item';
-            div.innerHTML = `<a href="${node.url}">${node.title || node.url}</a>`;
-            container.appendChild(div);
-        }
-        if (node.children) { // 如果是文件夹
-            processNodes(node.children);
-        }
-    });
-}
-// 保存配置到 Chrome 存储
-function saveSettings(token, gistId) {
-    chrome.storage.sync.set({
+// 创建全局配置管理实例
+const config = new ConfigManager();
+
+// ========== 兼容旧方法的封装 ==========
+
+/**
+ * 保存 GitHub 配置（兼容旧代码）
+ * @param {string} token - GitHub Token
+ * @param {string} gistId - Gist ID
+ */
+async function saveSettings(token, gistId) {
+    await config.setMultiple({
         githubToken: token,
         gistId: gistId
-    }, () => {
-        console.log('配置已保存');
     });
+    console.log('配置已保存');
 }
 
-// 获取配置
-function getSettings() {
-    return new Promise((resolve) => {
-        chrome.storage.sync.get(['githubToken', 'gistId'], (items) => {
-            resolve(items);
-        });
-    });
+/**
+ * 获取 GitHub 配置（兼容旧代码）
+ * @returns {Promise<Object>}
+ */
+async function getSettings() {
+    return await config.get(['githubToken', 'gistId']);
 }
 async function pushBookmarksToGithub() {
     const settings = await getSettings();
@@ -93,17 +232,6 @@ async function pullBookmarksFromGithub() {
     location.reload(); // 刷新页面查看新书签
 }
 
-// 辅助函数：递归导入书签
-async function importBookmarks(nodes, parentId = '1') {
-    for (const node of nodes) {
-        if (node.url) {
-            await chrome.bookmarks.create({ parentId, title: node.title, url: node.url });
-        } else if (node.children) {
-            const folder = await chrome.bookmarks.create({ parentId, title: node.title });
-            await importBookmarks(node.children, folder.id);
-        }
-    }
-}
 // 获取一言数据的函数
 async function fetchHitokoto() {
     const hitokotoElement = document.getElementById('hitokoto-text');
@@ -126,47 +254,6 @@ async function fetchHitokoto() {
 }
 
 
-
-function processNodes(nodes) {
-    const grid = document.getElementById('bookmark-grid');
-    nodes.forEach(node => {
-        if (node.url) {
-            const domain = new URL(node.url).hostname;
-            const iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-
-            const anchor = document.createElement('a');
-            anchor.className = 'icon-item';
-            anchor.href = node.url;
-            anchor.innerHTML = `
-                <div class="icon-img">
-                    <img src="${iconUrl}" alt="">
-                </div>
-                <span class="icon-name">${node.title.substring(0, 6)}</span>
-            `;
-            grid.appendChild(anchor);
-        }
-        // 如果需要显示文件夹，可以在这里递归处理或点击进入分类
-    });
-}
-
-// // 搜索引擎配置
-// const engines = {
-//     google: {
-//         name: 'Google',
-//         url: 'https://www.google.com/search?q=',
-//         icon: 'https://www.google.com/favicon.ico'
-//     },
-//     baidu: {
-//         name: 'Baidu',
-//         url: 'https://www.baidu.com/s?wd=',
-//         icon: 'https://www.baidu.com/favicon.ico'
-//     },   
-//      bing: {
-//         name: 'Bing',
-//         url: 'https://www.bing.com/search?q=',
-//         icon: 'https://www.bing.com/favicon.ico'
-//     }
-// };
 
 // let currentEngine = 'google'; // 默认引擎
 
@@ -209,13 +296,6 @@ function processNodes(nodes) {
 //     });
 // }
 
-// 在 DOMContentLoaded 中初始化
-document.addEventListener('DOMContentLoaded', () => {
-    // initSearch();
-    renderBookmarks();
-    fetchHitokoto();
-    // ... 之前的 renderBookmarks 和 fetchHitokoto
-});
 
 // 可选：点击句子刷新
  document.getElementById('hitokoto-container').addEventListener('click', fetchHitokoto);
@@ -300,3 +380,8 @@ function saveAndRender() {
     chrome.storage.sync.set({ customEngines: userEngines });
     renderEngineMenu();
 }
+
+// 在 DOMContentLoaded 中初始化
+document.addEventListener('DOMContentLoaded', () => {
+    fetchHitokoto();
+});
