@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>我的极简页</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="wallpaper"></div>
+
+    <div class="layout">
+        <nav class="sidebar">
+            <div class="nav-item active" data-category="default">🏠</div>
+            <div class="nav-item" data-category="work">💻</div>
+            <div class="nav-item" data-category="social">💬</div>
+            <div class="nav-item" id="open-settings">⚙️</div>
+        </nav>
+
+        <main class="content">
+            <div class="search-container">
+                <div class="search-bar-wrapper">
+                    <div class="search-engine-select" id="arrow-down">
+                        <img id="engine-icon" src="https://www.bing.com/favicon.ico" alt="bing">
+                        <span class="arrow-down" >
+                            <div class="engine-menu" id="engine-menu">
+                                <div class="engine-list" id="engine-list">
+                                </div>
+                                <div class="engine-item add-btn" id="add-engine">
+                                    <div class="engine-icon-wrapper">+</div>
+                                    <span>添加</span>
+                                </div>
+                            </div>
+                        </span>
+                    </div>
+
+                    <input type="text" id="search-input" placeholder="输入搜索内容" autofocus>
+
+                    <div class="search-submit">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path
+                                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                                fill="currentColor"></path>
+                        </svg>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div id="bookmark-grid" class="grid-container">
+            </div>
+
+            <div id="hitokoto-container">
+                <p id="hitokoto-text">加载中...</p>
+            </div>
+        </main>
+    </div>
+
+</body>
+<script src="newtab.js"></script>
+
+</html>
