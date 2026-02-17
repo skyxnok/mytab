@@ -1,3 +1,5 @@
+
+
 // 获取一言数据的函数
 async function fetchHitokoto() {
     const hitokotoElement = document.getElementById('hitokoto-text');
@@ -29,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function applyWallpaper() {
-    const res = await chrome.storage.local.get(['bgMode', 'wallpaper']);
+    const res = await config.get(['bgMode', 'wallpaper']);
     const bgElement = document.querySelector('.wallpaper');
     
     if (res.bgMode === 'random') {
