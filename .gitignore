@@ -1,1 +1,9 @@
 .DS_Store
+test*
+decrypt.js
+encrypt.js
+.gitignore
+.git
+.idea
+node_modules
+a.*

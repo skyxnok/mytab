@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>我的加密标签页</title>
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+  <h2>XXTEA加密/解密测试</h2>
+  
+  <div class="encrypt-box">
+    <button id="encryptBtn">加密插件数据（自动下载）</button>
+    <button id="decryptBtn">解密插件数据</button>
+    <button id="downloadBtn">手动下载加密文件</button> <!-- 新增下载按钮 -->
+    <div id="result"></div>
+  </div>
+
+  <!-- 按顺序引入外部脚本 -->
+  <script src="../js/storage_util.js"></script>
+  <script src="../js/export.js"></script>
+  <script src="../js/app.js"></script>
+</body>
+</html>

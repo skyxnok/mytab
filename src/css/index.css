@@ -1,0 +1,21 @@
+/* style.css - 外部样式文件 */
+body { 
+  padding: 20px; 
+  font-family: Arial; 
+}
+.encrypt-box { 
+  margin: 20px 0; 
+  padding: 15px; 
+  border: 1px solid #eee; 
+}
+button { 
+  margin: 5px; 
+  padding: 8px 15px; 
+  cursor: pointer; 
+}
+#result { 
+  margin-top: 10px; 
+  color: #666; 
+  white-space: pre-wrap; /* 保留换行，显示更清晰 */
+  line-height: 1.5;
+}
