@@ -7,3 +7,4 @@ encrypt.js
 .idea
 node_modules
 a.*
+config.js

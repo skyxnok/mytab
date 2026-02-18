@@ -4,6 +4,10 @@
     --text-color: #ffffff;
 }
 
+@font-face {
+    font-family: "Arial-Rounded-Bold";
+    src: url("../font/Arial-Rounded-Bold.woff") format("woff");
+}
 body, html {
     margin: 0; padding: 0; height: 100%;
     font-family: 'PingFang SC', sans-serif;
@@ -21,26 +25,6 @@ body, html {
 
 .layout { display: flex; height: 100vh; }
 
-/* 侧边栏 */
-.sidebar {
-    width: 70px;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    display: flex; flex-direction: column;
-    align-items: center; padding-top: 30px;
-}
-
-.nav-item {
-    width: 45px; height: 45px;
-    margin-bottom: 20px;
-    background: var(--glass-bg);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: 0.3s;
-    font-size: 20px;
-}
-
-.nav-item:hover { transform: scale(1.1); background: rgba(255,255,255,0.4); }
 
 /* 主内容 */
 .content { flex: 1; display: flex; flex-direction: column; align-items: center; padding-top: 8vh; }
@@ -139,61 +123,23 @@ body, html {
     cursor: pointer;
 }
 
-/* 菜单容器 */
-.engine-menu {
-    display: none; /* 默认隐藏 */
-    position: absolute;
-    top: 65px; /* 位于搜索框下方 */
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(25px);
-    border-radius: 24px;
-    padding: 20px;
-    width: 600px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    z-index: 100;
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-    gap: 15px;
-}
 
-.engine-menu.show { display: grid; }
 
-/* 单个引擎项 */
-.engine-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.2s;
-    position: relative;
-}
-
-.engine-item:hover { transform: translateY(-3px); }
-
-.engine-icon-wrapper {
-    width: 48px;
-    height: 48px;
-    background: white;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-.engine-item img { width: 28px; height: 28px; }
-.engine-item span { font-size: 12px; color: #333; }
-
-/* 删除按钮样式 */
-.delete-icon {
-    position: absolute;
-    top: -5px; right: 5px;
-    background: #ff4d4f;
-    color: white;
-    border-radius: 50%;
-    width: 16px; height: 16px;
-    font-size: 10px;
-    display: none; /* 默认隐藏，可以通过长按或特定状态显示 */
-    align-items: center; justify-content: center;
-}
 .engine-item:hover .delete-icon { display: flex; }
+
+.clock-box {
+  text-align: center;
+  margin-top: 10vh;
+  color: #333;
+}
+#time {
+  font-size: 64px;
+  font-family:"Arial-Rounded-Bold";
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+#date {
+  font-size: 18px;
+  font-family:"Arial-Rounded-Bold";
+  color: #666;
+}

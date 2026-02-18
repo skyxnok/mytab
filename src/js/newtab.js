@@ -8,7 +8,7 @@ async function fetchHitokoto() {
     try {
         const response = await fetch(url);
         if (response.ok) {
-            const data = await response.json(); 
+            const data = await response.json();
             text = data.yiyan
             let from = data.from
             hitokotoElement.innerText = `「  ${text} 」- ${from} - `;
@@ -20,35 +20,76 @@ async function fetchHitokoto() {
         hitokotoElement.innerText = "此时无声胜有声。";
     }
 }
+function performSearch() {
+    const searchInput = document.getElementById('search-input');
+    const query = searchInput.value.trim();
+    // 获取当前选中的搜索引擎
+    const engineIcon = document.getElementById('engine-icon');
+    const engineUrl = getEngineUrl(engineIcon.alt); // 假设有一个函数根据图标获取对应搜索引擎的URL
 
-// 可选：点击句子刷新
-document.getElementById('hitokoto-container').addEventListener('click', fetchHitokoto);
+    // 构造搜索链接并跳转
+    const searchUrl = `${engineUrl}${encodeURIComponent(query)}`;
+    window.location.href = searchUrl;
+}
 
+
+
+function handleEncrypt(data) {
+    try {
+        const jsonBytes = byteTools.jsonObjToUint8Array(data);
+        return TabTools.Json2Tab(jsonBytes);
+    } catch (e) {
+        console.error(e);
+        alert("加密失败：" + e.message);
+    }
+}
+
+function handleDecrypt(data) {
+    try {
+        const decryptResult = TabTools.Tab2Json(data);
+        return byteTools.uint8Array2JsonObj(decryptResult.jsonBytes);
+    } catch (e) {
+        console.error(e);
+        alert("解密失败：" + e.message);
+    }
+}
 
 // 在 DOMContentLoaded 中初始化
 document.addEventListener('DOMContentLoaded', () => {
     fetchHitokoto();
+    // 可选：点击句子刷新
+    document.getElementById('hitokoto-container').addEventListener('click', fetchHitokoto);
+    document.getElementById('search-input').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        performSearch();
+    }
+});
+    document.getElementById('search-submit').addEventListener('click', function() {performSearch();});
+    document.getElementById('arrow-down').addEventListener('click', function() {
+
+    });
 });
 
-async function applyWallpaper() {
-    const res = await config.get(['bgMode', 'wallpaper']);
-    const bgElement = document.querySelector('.wallpaper');
-    
-    if (res.bgMode === 'random') {
-        // 如果是随机模式，每次打开新标签页都换一张
-        const randomUrl = `https://source.unsplash.com/random/1920x1080?nature,vibe&t=${Date.now()}`;
-        bgElement.style.backgroundImage = `url(${randomUrl})`;
-    } else if (res.wallpaper) {
-        // 如果是固定模式
-        bgElement.style.backgroundImage = `url(${res.wallpaper})`;
-    } else {
-        // 默认壁纸
-        bgElement.style.backgroundImage = `url('https://picsum.photos/1920/1080')`;
-    }
+function showTime() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  const timeStr = `${h}:${m}:${s}`;
+
+  const dateStr = now.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long'
+  });
+
+  document.getElementById('time').innerText = timeStr;
+  document.getElementById('date').innerText = dateStr;
 }
 
-// 在 DOMContentLoaded 中调用
-document.addEventListener('DOMContentLoaded', () => {
-    applyWallpaper();
-    // ... 其他初始化函数
-});
+// 立即显示一次
+showTime();
+// 每秒刷新
+setInterval(showTime, 1000);
+

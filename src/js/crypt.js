@@ -301,8 +301,6 @@ const TabTools = {
 };
 
 
-// 对外接口
-// export { xxteaTools, byteTools, TabTools };
 
 if (typeof window !== 'undefined') {
     window.TabEncrypt = { xxteaTools, byteTools, TabTools };
