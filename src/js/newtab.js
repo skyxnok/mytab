@@ -33,6 +33,16 @@ function performSearch() {
 }
 
 
+// 示例：根据搜索引擎名称返回对应的搜索URL
+function getEngineUrl(engineName) {
+    const engines = {
+        'bing': 'https://www.bing.com/search?q=',
+        'google': 'https://www.google.com/search?q=',
+        'baidu': 'https://www.baidu.com/s?wd='
+    };
+    return engines[engineName] || engines['bing']; // 默认使用Bing
+}
+
 
 function handleEncrypt(data) {
     try {
